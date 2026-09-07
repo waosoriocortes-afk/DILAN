@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paletas de Dilan</title>
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS para el diseño -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React y ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <!-- Babel -->
+    <!-- Babel para compilar JSX en el navegador -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- Iconos de Phosphor -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Google Fonts: Comic Neue -->
+    <!-- Google Fonts: Comic Neue para un toque infantil -->
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Comic Neue', cursive;
-            background-color: #e0f2fe;
+            background-color: #fef08a; /* Fondo amarillo muy clarito y alegre */
         }
         .btn-burbuja {
             transition: transform 0.1s ease-in-out;
@@ -26,10 +26,6 @@
         .btn-burbuja:active {
             transform: scale(0.95);
         }
-        /* Scrollbar personalizada y fina */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #bae6fd; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -38,57 +34,97 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
+        // Utilidad para formatear dinero con puntos para los miles (ej: 1.500)
         const formatearPlata = (valor) => {
             if (valor === undefined || valor === null) return "0";
             return Number(valor).toLocaleString('es-CO');
         };
 
+        // Datos iniciales de las paletas a 2000 y costo 700 con stock en 0
         const HELADOS_INICIALES = [
-            { id: '1', nombre: 'Frutos rojos', emoji: '🍓', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-red-400' },
-            { id: '2', nombre: 'Arequipe', emoji: '🍮', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-orange-300' },
-            { id: '3', nombre: 'Mandarina', emoji: '🍊', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-orange-400' },
-            { id: '4', nombre: 'Chicle', emoji: '🍬', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-pink-300' },
-            { id: '5', nombre: 'Uva', emoji: '🍇', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-purple-400' },
-            { id: '6', nombre: 'Piña', emoji: '🍍', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-yellow-400' },
-            { id: '7', nombre: 'Coco', emoji: '🥥', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-slate-100' },
-            { id: '8', nombre: 'Limón', emoji: '🍋', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-green-400' },
-            { id: '9', nombre: 'Chocolate', emoji: '🍫', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-amber-700' },
-            { id: '10', nombre: 'Maracuyá', emoji: '🟡', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-yellow-500' },
-            { id: '11', nombre: 'Mora brownie', emoji: '🫐', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-purple-600' },
-            { id: '12', nombre: 'Mango biche', emoji: '🥭', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-green-300' },
-            { id: '13', nombre: 'Bom Bom Bum', emoji: '🍭', precioVenta: 1500, costoCompra: 700, stock: 10, color: 'bg-red-500' }
+            { id: '1', nombre: 'Frutos rojos', emoji: '🍓', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-red-500' },
+            { id: '2', nombre: 'Arequipe', emoji: '🍮', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-orange-300' },
+            { id: '3', nombre: 'Mandarina', emoji: '🍊', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-orange-400' },
+            { id: '4', nombre: 'Chicle', emoji: '🍬', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-pink-300' },
+            { id: '5', nombre: 'Uva', emoji: '🍇', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-purple-400' },
+            { id: '6', nombre: 'Piña', emoji: '🍍', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-yellow-400' },
+            { id: '7', nombre: 'Coco', emoji: '🥥', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-slate-100' },
+            { id: '8', nombre: 'Limón', emoji: '🍋', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-green-400' },
+            { id: '9', nombre: 'Chocolate', emoji: '🍫', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-amber-700' },
+            { id: '10', nombre: 'Maracuyá', emoji: '🟡', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-yellow-500' },
+            { id: '11', nombre: 'Mora', emoji: '🫐', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-purple-600' },
+            { id: '12', nombre: 'Brownie', emoji: '🥮', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-amber-900' },
+            { id: '13', nombre: 'Mango biche', emoji: '🥭', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-green-300' },
+            { id: '14', nombre: 'Bom Bom Bum', emoji: '🍭', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-red-400' },
+            { id: '15', nombre: 'Fresa', emoji: '🍓', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-red-300' }
         ];
 
         function App() {
-            // --- PERSISTENCIA: Cargar datos de LocalStorage ---
+            // Estado de la aplicación con persistencia en localStorage
+            const [pantallaActual, setPantallaActual] = useState('vender'); // vender, comprar, stock, informes
+            
             const [inventario, setInventario] = useState(() => {
-                const save = localStorage.getItem('dilan_inv');
-                return save ? JSON.parse(save) : HELADOS_INICIALES;
+                const guardado = localStorage.getItem('dilan_inventario');
+                return guardado ? JSON.parse(guardado) : HELADOS_INICIALES;
             });
+
             const [historialVentas, setHistorialVentas] = useState(() => {
-                const save = localStorage.getItem('dilan_ventas');
-                return save ? JSON.parse(save) : [];
+                const guardado = localStorage.getItem('dilan_ventas');
+                return guardado ? JSON.parse(guardado) : [];
             });
+
             const [historialCompras, setHistorialCompras] = useState(() => {
-                const save = localStorage.getItem('dilan_compras');
-                return save ? JSON.parse(save) : [];
+                const guardado = localStorage.getItem('dilan_compras');
+                return guardado ? JSON.parse(guardado) : [];
             });
+            
             const [historialRetiros, setHistorialRetiros] = useState(() => {
-                const save = localStorage.getItem('dilan_retiros');
-                return save ? JSON.parse(save) : [];
+                const guardado = localStorage.getItem('dilan_retiros');
+                return guardado ? JSON.parse(guardado) : [];
             });
 
-            const [pantallaActual, setPantallaActual] = useState('vender');
-
-            // --- GUARDAR AUTOMÁTICAMENTE ---
+            // Guardar automáticamente en localStorage cada vez que cambie el estado
             useEffect(() => {
-                localStorage.setItem('dilan_inv', JSON.stringify(inventario));
-                localStorage.setItem('dilan_ventas', JSON.stringify(historialVentas));
-                localStorage.setItem('dilan_compras', JSON.stringify(historialCompras));
-                localStorage.setItem('dilan_retiros', JSON.stringify(historialRetiros));
-            }, [inventario, historialVentas, historialCompras, historialRetiros]);
+                localStorage.setItem('dilan_inventario', JSON.stringify(inventario));
+            }, [inventario]);
 
-            // --- LÓGICA DE VENTAS ---
+            useEffect(() => {
+                localStorage.setItem('dilan_ventas', JSON.stringify(historialVentas));
+            }, [historialVentas]);
+
+            useEffect(() => {
+                localStorage.setItem('dilan_compras', JSON.stringify(historialCompras));
+            }, [historialCompras]);
+
+            useEffect(() => {
+                localStorage.setItem('dilan_retiros', JSON.stringify(historialRetiros));
+            }, [historialRetiros]);
+
+            // --- ESTADOS PARA EDICIÓN DE PRECIOS ---
+            const [saborEditando, setSaborEditando] = useState(null);
+            const [preciosEditados, setPreciosEditados] = useState({ precioVenta: '', costoCompra: '' });
+            
+            const iniciarEdicion = (helado) => {
+                setSaborEditando(helado.id);
+                setPreciosEditados({ precioVenta: helado.precioVenta, costoCompra: helado.costoCompra });
+            };
+
+            const guardarEdicion = (id) => {
+                if (!preciosEditados.precioVenta || !preciosEditados.costoCompra) {
+                    alert('¡Oye! Faltan los precios nuevos.');
+                    return;
+                }
+                const nuevoInventario = inventario.map(h => 
+                    h.id === id 
+                        ? { ...h, precioVenta: parseInt(preciosEditados.precioVenta), costoCompra: parseInt(preciosEditados.costoCompra) } 
+                        : h
+                );
+                setInventario(nuevoInventario);
+                setSaborEditando(null);
+                alert('¡Precios actualizados súper rápido! ⚡');
+            };
+
+            // --- ESTADOS PARA EL MÓDULO DE VENTA ---
             const [carritoVenta, setCarritoVenta] = useState([]);
             const [pagoRecibido, setPagoRecibido] = useState('');
             const [descuento, setDescuento] = useState('');
@@ -96,21 +132,21 @@
 
             const agregarAlCarrito = (helado) => {
                 const itemEnCarrito = carritoVenta.find(item => item.id === helado.id);
-                const productoInventario = inventario.find(p => p.id === helado.id);
-                
                 if (itemEnCarrito) {
+                    const productoInventario = inventario.find(p => p.id === helado.id);
                     if (itemEnCarrito.cantidad < productoInventario.stock) {
                         setCarritoVenta(carritoVenta.map(item => 
                             item.id === helado.id ? { ...item, cantidad: item.cantidad + 1 } : item
                         ));
                     } else {
-                        alert(`¡Ups! Solo quedan ${productoInventario.stock} paletas.`);
+                        alert(`¡Ups! No tienes más paletas de ${helado.nombre} para vender.`);
                     }
                 } else {
+                    const productoInventario = inventario.find(p => p.id === helado.id);
                     if (productoInventario.stock > 0) {
                         setCarritoVenta([...carritoVenta, { ...helado, cantidad: 1 }]);
                     } else {
-                         alert(`¡Se acabaron las de ${helado.nombre}!`);
+                         alert(`¡Ups! Se agotó la paleta de ${helado.nombre}.`);
                     }
                 }
             };
@@ -132,230 +168,656 @@
             const vueltas = parseInt(pagoRecibido || 0) - totalVenta;
 
             const confirmarVenta = () => {
+                if (carritoVenta.length === 0) return;
+                
                 const nuevoInventario = inventario.map(producto => {
                     const itemVendido = carritoVenta.find(item => item.id === producto.id);
-                    return itemVendido ? { ...producto, stock: producto.stock - itemVendido.cantidad } : producto;
+                    if (itemVendido) {
+                        return { ...producto, stock: producto.stock - itemVendido.cantidad };
+                    }
+                    return producto;
                 });
                 
-                const nuevaVenta = { id: Date.now(), items: [...carritoVenta], total: totalVenta };
+                const nuevaVenta = {
+                    id: Date.now(),
+                    fecha: new Date(),
+                    items: [...carritoVenta],
+                    subtotal: subtotalVenta,
+                    descuento: valorDescuento,
+                    total: totalVenta
+                };
+
                 setInventario(nuevoInventario);
                 setHistorialVentas([...historialVentas, nuevaVenta]);
+                
                 setCarritoVenta([]);
-                setPagoRecibido(''); setDescuento(''); setMostrarVueltas(false);
-                alert('¡Venta cobrada! 💰');
+                setPagoRecibido('');
+                setDescuento('');
+                setMostrarVueltas(false);
+                alert('¡Venta realizada con éxito! 🎉');
             };
 
-            // --- LÓGICA DE COMPRAS ---
+            // --- ESTADOS PARA EL MÓDULO DE COMPRA (Reabastecer) ---
             const [carritoCompra, setCarritoCompra] = useState([]);
+
+            const [mostrarFormNuevo, setMostrarFormNuevo] = useState(false);
+            const [nuevoSabor, setNuevoSabor] = useState({ nombre: '', emoji: '🍧', precioVenta: '2000', costoCompra: '700' });
+
+            const handleAgregarSabor = (e) => {
+                e.preventDefault();
+                if (!nuevoSabor.nombre || !nuevoSabor.precioVenta || !nuevoSabor.costoCompra) {
+                    alert('¡Faltan datos para tu nueva paleta!');
+                    return;
+                }
+                const nuevoId = Date.now().toString();
+                const nuevaPaleta = {
+                    id: nuevoId,
+                    nombre: nuevoSabor.nombre,
+                    emoji: nuevoSabor.emoji,
+                    precioVenta: parseInt(nuevoSabor.precioVenta),
+                    costoCompra: parseInt(nuevoSabor.costoCompra),
+                    stock: 0, 
+                    color: 'bg-yellow-300'
+                };
+                setInventario([...inventario, nuevaPaleta]);
+                setMostrarFormNuevo(false);
+                setNuevoSabor({ nombre: '', emoji: '🍧', precioVenta: '2000', costoCompra: '700' });
+                alert('¡Nuevo sabor de paleta agregado! Ve a "Comprar" para llenar la nevera.');
+            };
+
             const agregarAlCarritoCompra = (helado) => {
-                const item = carritoCompra.find(i => i.id === helado.id);
-                if (item) {
-                    setCarritoCompra(carritoCompra.map(i => i.id === helado.id ? { ...i, cantidad: i.cantidad + 1 } : i));
+                const itemEnCarrito = carritoCompra.find(item => item.id === helado.id);
+                if (itemEnCarrito) {
+                    setCarritoCompra(carritoCompra.map(item => 
+                        item.id === helado.id ? { ...item, cantidad: item.cantidad + 1 } : item
+                    ));
                 } else {
                     setCarritoCompra([...carritoCompra, { ...helado, cantidad: 1 }]);
                 }
             };
 
-            const quitarDelCarritoCompra = (id) => {
-                const item = carritoCompra.find(i => i.id === id);
-                if (item.cantidad > 1) {
-                    setCarritoCompra(carritoCompra.map(i => i.id === id ? { ...i, cantidad: i.cantidad - 1 } : i));
+            const quitarDelCarritoCompra = (idHelado) => {
+                const itemEnCarrito = carritoCompra.find(item => item.id === idHelado);
+                if (itemEnCarrito.cantidad > 1) {
+                    setCarritoCompra(carritoCompra.map(item => 
+                        item.id === idHelado ? { ...item, cantidad: item.cantidad - 1 } : item
+                    ));
                 } else {
-                    setCarritoCompra(carritoCompra.filter(i => i.id !== id));
+                    setCarritoCompra(carritoCompra.filter(item => item.id !== idHelado));
                 }
             };
 
             const totalCompra = carritoCompra.reduce((total, item) => total + (item.costoCompra * item.cantidad), 0);
 
             const confirmarCompra = () => {
-                const nuevoInventario = inventario.map(p => {
-                    const item = carritoCompra.find(i => i.id === p.id);
-                    return item ? { ...p, stock: p.stock + item.cantidad } : p;
+                if (carritoCompra.length === 0) return;
+
+                const nuevoInventario = inventario.map(producto => {
+                    const itemComprado = carritoCompra.find(item => item.id === producto.id);
+                    if (itemComprado) {
+                        return { ...producto, stock: producto.stock + itemComprado.cantidad };
+                    }
+                    return producto;
                 });
+
+                const nuevaCompra = {
+                    id: Date.now(),
+                    fecha: new Date(),
+                    items: [...carritoCompra],
+                    total: totalCompra
+                };
+
                 setInventario(nuevoInventario);
-                setHistorialCompras([...historialCompras, { id: Date.now(), total: totalCompra }]);
+                setHistorialCompras([...historialCompras, nuevaCompra]);
+                
                 setCarritoCompra([]);
-                alert('¡Nevera llena! 🧊');
+                alert('¡Paletas compradas y guardadas en la nevera! 🧊');
             };
 
-            // --- EDICIÓN Y NUEVOS SABORES ---
-            const [saborEditando, setSaborEditando] = useState(null);
-            const [preciosEditados, setPreciosEditados] = useState({ precioVenta: '', costoCompra: '' });
-            const [mostrarFormNuevo, setMostrarFormNuevo] = useState(false);
-            const [nuevoSabor, setNuevoSabor] = useState({ nombre: '', emoji: '🍧', precioVenta: '', costoCompra: '' });
-
-            const guardarEdicion = (id) => {
-                setInventario(inventario.map(h => h.id === id ? { ...h, precioVenta: parseInt(preciosEditados.precioVenta), costoCompra: parseInt(preciosEditados.costoCompra) } : h));
-                setSaborEditando(null);
-            };
-
-            const handleAgregarSabor = (e) => {
-                e.preventDefault();
-                const nuevaPaleta = { ...nuevoSabor, id: Date.now().toString(), stock: 0, color: 'bg-blue-300', precioVenta: parseInt(nuevoSabor.precioVenta), costoCompra: parseInt(nuevoSabor.costoCompra) };
-                setInventario([...inventario, nuevaPaleta]);
-                setMostrarFormNuevo(false);
-                setNuevoSabor({ nombre: '', emoji: '🍧', precioVenta: '', costoCompra: '' });
-            };
-
-            // --- RETIROS ---
+            // --- ESTADOS PARA RETIRAR GANANCIAS ---
             const [mostrarFormRetiro, setMostrarFormRetiro] = useState(false);
             const [retiro, setRetiro] = useState({ monto: '', motivo: '' });
 
-            // --- MÉTRICAS ---
-            const metricas = useMemo(() => {
-                const ingresos = historialVentas.reduce((t, v) => t + v.total, 0);
-                const gastos = historialCompras.reduce((t, c) => t + c.total, 0);
-                const retiros = historialRetiros.reduce((t, r) => t + r.monto, 0);
-                const gananciaTotal = ingresos - gastos;
+            const confirmarRetiro = (e) => {
+                e.preventDefault();
+                const montoNumero = parseInt(retiro.monto);
                 
-                let ventasPorProd = {};
-                inventario.forEach(p => ventasPorProd[p.id] = { ...p, cantidadVendida: 0, ingresos: 0 });
-                historialVentas.forEach(v => {
-                    v.items.forEach(item => {
-                        if(ventasPorProd[item.id]) {
-                            ventasPorProd[item.id].cantidadVendida += item.cantidad;
-                            ventasPorProd[item.id].ingresos += (item.precioVenta * item.cantidad);
+                if (!montoNumero || montoNumero <= 0) {
+                    alert('¡Escribe cuánta plata quieres sacar!');
+                    return;
+                }
+                
+                if (montoNumero > metricas.plataEnCaja) {
+                    alert(`¡Ups! Solo tienes $${formatearPlata(metricas.plataEnCaja)} disponibles en tu alcancía.`);
+                    return;
+                }
+
+                const nuevoRetiro = {
+                    id: Date.now(),
+                    fecha: new Date(),
+                    monto: montoNumero,
+                    motivo: retiro.motivo || 'Premio para Dilan'
+                };
+
+                setHistorialRetiros([...historialRetiros, nuevoRetiro]);
+                setMostrarFormRetiro(false);
+                setRetiro({ monto: '', motivo: '' });
+                alert('¡Plata retirada! Disfruta tu premio 🥳');
+            };
+
+            // --- CÁLCULOS PARA INFORMES ---
+            const metricas = useMemo(() => {
+                let totalIngresos = 0;
+                let totalGastos = 0;
+                let totalRetiros = 0;
+                let ventasPorProducto = {};
+
+                inventario.forEach(p => {
+                    ventasPorProducto[p.id] = { nombre: p.nombre, emoji: p.emoji, cantidadVendida: 0, ingresos: 0 };
+                });
+
+                historialVentas.forEach(venta => {
+                    totalIngresos += venta.total;
+                    venta.items.forEach(item => {
+                        if (ventasPorProducto[item.id]) {
+                            ventasPorProducto[item.id].cantidadVendida += item.cantidad;
+                            ventasPorProducto[item.id].ingresos += (item.precioVenta * item.cantidad);
                         }
                     });
                 });
 
-                return { ingresos, gastos, retiros, plataEnCaja: gananciaTotal - retiros, ventasPorProducto: Object.values(ventasPorProd) };
-            }, [historialVentas, historialCompras, historialRetiros, inventario]);
+                historialCompras.forEach(compra => {
+                    totalGastos += compra.total;
+                });
 
-            const borrarTodo = () => {
-                if(confirm("¿Dilan, quieres borrar todo y empezar de cero?")) {
-                    localStorage.clear();
-                    window.location.reload();
-                }
-            };
+                historialRetiros.forEach(r => {
+                    totalRetiros += r.monto;
+                });
 
-            // --- RENDERIZADO DE VISTAS ---
+                const gananciaTotal = totalIngresos - totalGastos;
+                const plataEnCaja = gananciaTotal - totalRetiros;
+
+                return {
+                    ingresos: totalIngresos,
+                    gastos: totalGastos,
+                    gananciaTotal: gananciaTotal,
+                    retiros: totalRetiros,
+                    plataEnCaja: plataEnCaja,
+                    ventasPorProducto: Object.values(ventasPorProducto)
+                };
+            }, [historialVentas, historialCompras, inventario, historialRetiros]);
+
+
+            // --- VISTAS ---
             const renderVender = () => (
-                <div className="flex flex-col lg:flex-row gap-6 p-4">
-                    <div className="flex-1 bg-white p-6 rounded-3xl shadow-xl border-4 border-cyan-300">
-                        <h2 className="text-3xl font-bold text-cyan-600 mb-6 text-center">🍦 ¡A Vender Paletas!</h2>
+                <div className="flex flex-col md:flex-row gap-6 p-4">
+                    {/* Lista de Paletas para vender */}
+                    <div className="flex-1 bg-white p-6 rounded-3xl shadow-xl border-4 border-blue-300">
+                        <h2 className="text-3xl font-bold text-blue-600 mb-6 text-center">🍦 ¡A Vender Paletas! 🍦</h2>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {inventario.map(helado => (
-                                <button key={helado.id} onClick={() => agregarAlCarrito(helado)} 
-                                    className={`btn-burbuja flex flex-col items-center p-3 rounded-2xl border-4 ${helado.stock > 0 ? 'border-cyan-100 bg-cyan-50 hover:bg-cyan-100' : 'opacity-50 grayscale cursor-not-allowed border-gray-200'}`}
-                                    disabled={helado.stock === 0}>
-                                    <span className="text-5xl mb-1">{helado.emoji}</span>
-                                    <span className="font-bold text-gray-800">{helado.nombre}</span>
-                                    <span className="text-cyan-600 font-bold">${formatearPlata(helado.precioVenta)}</span>
-                                    <span className="text-xs text-gray-400">Stock: {helado.stock}</span>
+                                <button 
+                                    key={helado.id}
+                                    onClick={() => agregarAlCarrito(helado)}
+                                    className={`btn-burbuja flex flex-col items-center justify-center p-4 rounded-2xl border-4 ${helado.stock > 0 ? 'border-yellow-300 bg-yellow-50 hover:bg-yellow-100 cursor-pointer' : 'border-gray-200 bg-gray-100 opacity-50 cursor-not-allowed'}`}
+                                    disabled={helado.stock === 0}
+                                >
+                                    <span className="text-5xl mb-2">{helado.emoji}</span>
+                                    <span className="font-bold text-lg text-gray-800">{helado.nombre}</span>
+                                    <span className="text-blue-600 font-bold">${formatearPlata(helado.precioVenta)}</span>
+                                    <span className="text-xs text-gray-500 mt-1">Quedan: {helado.stock}</span>
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    <div className="w-full lg:w-96 bg-blue-50 p-6 rounded-3xl shadow-xl border-4 border-blue-300">
-                        <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">🛒 Carrito</h2>
-                        <div className="bg-white rounded-xl p-3 border-2 border-blue-100 min-h-[150px] mb-4">
-                            {carritoVenta.length === 0 ? <p className="text-center text-gray-400 pt-10">Vacío...</p> : 
+                    {/* Caja Registradora */}
+                    <div className="w-full md:w-80 bg-green-50 p-6 rounded-3xl shadow-xl border-4 border-green-300 flex flex-col">
+                        <h2 className="text-2xl font-bold text-green-600 mb-4 text-center">🛒 Mi Pedido</h2>
+                        
+                        <div className="flex-1 overflow-y-auto min-h-[200px] mb-4 bg-white rounded-xl p-2 border-2 border-green-200">
+                            {carritoVenta.length === 0 ? (
+                                <p className="text-center text-gray-400 mt-10">Toca una paleta para agregarla.</p>
+                            ) : (
                                 carritoVenta.map(item => (
-                                    <div key={item.id} className="flex justify-between items-center mb-2 pb-2 border-b border-gray-50">
-                                        <span className="text-sm font-bold">{item.emoji} {item.nombre}</span>
+                                    <div key={item.id} className="flex justify-between items-center border-b border-gray-100 py-2">
                                         <div className="flex items-center gap-2">
-                                            <button onClick={() => quitarDelCarrito(item.id)} className="bg-red-100 text-red-600 w-6 h-6 rounded-full font-bold">-</button>
-                                            <span className="w-4 text-center font-bold">{item.cantidad}</span>
-                                            <button onClick={() => agregarAlCarrito(item)} className="bg-green-100 text-green-600 w-6 h-6 rounded-full font-bold">+</button>
+                                            <span className="text-2xl">{item.emoji}</span>
+                                            <div>
+                                                <p className="font-bold text-sm leading-tight">{item.nombre}</p>
+                                                <p className="text-xs text-gray-500">${formatearPlata(item.precioVenta)} x {item.cantidad}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <button onClick={() => quitarDelCarrito(item.id)} className="bg-red-200 text-red-700 w-6 h-6 rounded-full font-bold flex items-center justify-center hover:bg-red-300">-</button>
+                                            <span className="font-bold text-sm w-4 text-center">{item.cantidad}</span>
+                                            <button onClick={() => agregarAlCarrito(item)} className="bg-green-200 text-green-700 w-6 h-6 rounded-full font-bold flex items-center justify-center hover:bg-green-300">+</button>
                                         </div>
                                     </div>
                                 ))
-                            }
+                            )}
                         </div>
-                        <div className="space-y-2 text-lg font-bold text-gray-700">
-                            <div className="flex justify-between"><span>Total:</span> <span className="text-blue-600 text-2xl">${formatearPlata(totalVenta)}</span></div>
-                            <input type="number" value={pagoRecibido} onChange={(e) => {setPagoRecibido(e.target.value); setMostrarVueltas(true)}} 
-                                placeholder="¿Con cuánto pagan?" className="w-full p-3 rounded-xl border-2 border-blue-200 text-center" />
-                            {mostrarVueltas && (
-                                <div className={`p-3 rounded-xl text-center ${vueltas >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
-                                    {vueltas >= 0 ? `Vueltas: $${formatearPlata(vueltas)}` : `Faltan: $${formatearPlata(Math.abs(vueltas))}`}
+
+                        <div className="bg-white p-4 rounded-xl border-2 border-green-200 mb-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-bold text-gray-500">Subtotal:</span>
+                                <span className="text-lg font-bold text-gray-500">${formatearPlata(subtotalVenta)}</span>
+                            </div>
+                            
+                            <div className="flex justify-between items-center mb-2 border-b border-gray-100 pb-2">
+                                <span className="text-sm font-bold text-green-600">Rebaja (Descuento):</span>
+                                <div className="flex items-center gap-1 w-24">
+                                    <span className="text-green-600 font-bold">$</span>
+                                    <input 
+                                        type="number" 
+                                        value={descuento}
+                                        onChange={(e) => setDescuento(e.target.value)}
+                                        className="w-full p-1 text-sm font-bold rounded border border-green-200 focus:outline-none focus:border-green-400 text-right text-green-600"
+                                        placeholder="0"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between items-center mb-2 pt-1">
+                                <span className="text-lg font-bold text-gray-700">Total a cobrar:</span>
+                                <span className="text-2xl font-bold text-green-600">${formatearPlata(totalVenta)}</span>
+                            </div>
+                            
+                            {totalVenta > 0 && (
+                                <div className="mt-4 border-t-2 border-dashed border-gray-200 pt-4">
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">¿Con cuánto te pagan?</label>
+                                    <div className="flex gap-2 mb-3">
+                                        <span className="text-xl font-bold text-gray-500 mt-2">$</span>
+                                        <input 
+                                            type="number" 
+                                            value={pagoRecibido}
+                                            onChange={(e) => {
+                                                setPagoRecibido(e.target.value);
+                                                setMostrarVueltas(true);
+                                            }}
+                                            className="w-full p-2 text-xl font-bold rounded-lg border-2 border-yellow-400 focus:outline-none focus:border-yellow-500 text-right bg-yellow-50"
+                                            placeholder="0"
+                                        />
+                                    </div>
+
+                                    {/* Botones rápidos de billetes con toque amarillo */}
+                                    <div className="flex flex-wrap gap-2 mb-3 justify-center">
+                                        <button onClick={() => {setPagoRecibido(totalVenta); setMostrarVueltas(true);}} className="text-xs font-bold bg-yellow-300 hover:bg-yellow-400 border border-yellow-400 rounded-lg px-3 py-2 text-yellow-900 shadow-sm cursor-pointer">Exacto ✅</button>
+                                        <button onClick={() => {setPagoRecibido(2000); setMostrarVueltas(true);}} className="text-xs font-bold bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-lg px-2 py-2 text-blue-800 shadow-sm cursor-pointer">$2.000</button>
+                                        <button onClick={() => {setPagoRecibido(5000); setMostrarVueltas(true);}} className="text-xs font-bold bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-lg px-2 py-2 text-blue-800 shadow-sm cursor-pointer">$5.000</button>
+                                        <button onClick={() => {setPagoRecibido(10000); setMostrarVueltas(true);}} className="text-xs font-bold bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-lg px-2 py-2 text-blue-800 shadow-sm cursor-pointer">$10.000</button>
+                                        <button onClick={() => {setPagoRecibido(20000); setMostrarVueltas(true);}} className="text-xs font-bold bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-lg px-2 py-2 text-blue-800 shadow-sm cursor-pointer">$20.000</button>
+                                        <button onClick={() => {setPagoRecibido(50000); setMostrarVueltas(true);}} className="text-xs font-bold bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-lg px-2 py-2 text-blue-800 shadow-sm cursor-pointer">$50.000</button>
+                                    </div>
+
+                                    {mostrarVueltas && pagoRecibido !== '' && (
+                                        <div className={`mt-3 p-3 rounded-lg text-center shadow-inner ${vueltas < 0 ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-yellow-100 text-yellow-900 border border-yellow-300'}`}>
+                                            <span className="block text-sm font-bold uppercase mb-1">
+                                                {vueltas < 0 ? '¡Falta plata!' : 'Vueltas a entregar:'}
+                                            </span>
+                                            <span className="text-3xl font-black">${formatearPlata(Math.abs(vueltas))}</span>
+                                        </div>
+                                    )}
                                 </div>
                             )}
-                            <button onClick={confirmarVenta} disabled={carritoVenta.length === 0 || vueltas < 0}
-                                className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg disabled:grayscale">
-                                ¡Vendido! 💰
-                            </button>
                         </div>
+
+                        <button 
+                            onClick={confirmarVenta}
+                            disabled={carritoVenta.length === 0 || (mostrarVueltas && vueltas < 0)}
+                            className={`btn-burbuja w-full py-4 rounded-xl font-bold text-xl text-white shadow-lg ${
+                                carritoVenta.length === 0 || (mostrarVueltas && vueltas < 0)
+                                ? 'bg-gray-400 cursor-not-allowed' 
+                                : 'bg-gradient-to-r from-yellow-500 to-green-500 hover:from-yellow-600 hover:to-green-600 cursor-pointer text-gray-900 font-black'
+                            }`}
+                        >
+                            ¡Cobrar! 💰
+                        </button>
+                    </div>
+                </div>
+            );
+
+            const renderComprar = () => (
+                <div className="flex flex-col md:flex-row gap-6 p-4">
+                    <div className="flex-1 bg-white p-6 rounded-3xl shadow-xl border-4 border-green-300">
+                        <h2 className="text-3xl font-bold text-green-600 mb-2 text-center">🚚 Comprar Paletas</h2>
+                        <p className="text-center text-gray-500 mb-6">¡Llena tu nevera para vender más!</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            {inventario.map(helado => (
+                                <button 
+                                    key={helado.id}
+                                    onClick={() => agregarAlCarritoCompra(helado)}
+                                    className="btn-burbuja flex flex-col items-center justify-center p-4 rounded-2xl border-4 border-yellow-200 bg-yellow-50 hover:bg-yellow-100 cursor-pointer"
+                                >
+                                    <span className="text-5xl mb-2">{helado.emoji}</span>
+                                    <span className="font-bold text-lg text-gray-800">{helado.nombre}</span>
+                                    <span className="text-green-600 font-bold text-sm">Cuesta: ${formatearPlata(helado.costoCompra)}</span>
+                                    <span className="text-xs text-gray-500 mt-1">En nevera: {helado.stock}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="w-full md:w-80 bg-blue-50 p-6 rounded-3xl shadow-xl border-4 border-blue-300 flex flex-col">
+                        <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">📦 Mi Pedido al Proveedor</h2>
+                        
+                        <div className="flex-1 overflow-y-auto min-h-[200px] mb-4 bg-white rounded-xl p-2 border-2 border-blue-100">
+                            {carritoCompra.length === 0 ? (
+                                <p className="text-center text-gray-400 mt-10">¿Qué sabores quieres comprar hoy?</p>
+                            ) : (
+                                carritoCompra.map(item => (
+                                    <div key={item.id} className="flex justify-between items-center border-b border-gray-100 py-2">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-2xl">{item.emoji}</span>
+                                            <div>
+                                                <p className="font-bold text-sm leading-tight">{item.nombre}</p>
+                                                <p className="text-xs text-gray-500">${formatearPlata(item.costoCompra)} x {item.cantidad}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <button onClick={() => quitarDelCarritoCompra(item.id)} className="bg-red-200 text-red-700 w-6 h-6 rounded-full font-bold flex items-center justify-center hover:bg-red-300">-</button>
+                                            <span className="font-bold text-sm w-4 text-center">{item.cantidad}</span>
+                                            <button onClick={() => agregarAlCarritoCompra(item)} className="bg-green-200 text-green-700 w-6 h-6 rounded-full font-bold flex items-center justify-center hover:bg-green-300">+</button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        <div className="bg-white p-4 rounded-xl border-2 border-blue-200 mb-4 flex justify-between items-center">
+                            <span className="text-lg font-bold text-gray-700">Total a pagar:</span>
+                            <span className="text-2xl font-bold text-blue-600">${formatearPlata(totalCompra)}</span>
+                        </div>
+
+                        <button 
+                            onClick={confirmarCompra}
+                            disabled={carritoCompra.length === 0}
+                            className={`btn-burbuja w-full py-4 rounded-xl font-bold text-xl text-white shadow-lg ${
+                                carritoCompra.length === 0 
+                                ? 'bg-gray-400 cursor-not-allowed' 
+                                : 'bg-gradient-to-r from-yellow-400 to-blue-500 hover:from-yellow-500 hover:to-blue-600 cursor-pointer text-gray-900 font-black'
+                            }`}
+                        >
+                            Pagar Paletas 🚚
+                        </button>
                     </div>
                 </div>
             );
 
             const renderStock = () => (
-                <div className="p-4 max-w-2xl mx-auto">
-                    <div className="bg-white p-6 rounded-3xl shadow-xl border-4 border-indigo-300">
-                        <h2 className="text-3xl font-bold text-indigo-600 mb-6 text-center">❄️ Mi Nevera</h2>
-                        <div className="space-y-3">
-                            {inventario.map(h => (
-                                <div key={h.id} className="p-4 bg-indigo-50 rounded-2xl border-2 border-indigo-100 flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <span className="text-4xl">{h.emoji}</span>
-                                        <div>
-                                            <p className="font-bold text-lg">{h.nombre}</p>
-                                            <p className="text-sm text-gray-500">Venta: ${formatearPlata(h.precioVenta)}</p>
+                <div className="p-4">
+                    <div className="bg-white p-6 rounded-3xl shadow-xl border-4 border-yellow-300 max-w-3xl mx-auto">
+                        <h2 className="text-3xl font-bold text-yellow-600 mb-2 text-center">❄️ Mi Nevera (Stock) ❄️</h2>
+                        <p className="text-center text-gray-500 mb-8">Revisa cuántas paletas te quedan de cada sabor.</p>
+                        
+                        <div className="space-y-4 mb-8">
+                            {inventario.map(helado => (
+                                <div key={helado.id} className="bg-yellow-50 p-4 rounded-2xl border-2 border-yellow-200 transition-all">
+                                    <div className="flex items-center">
+                                        <div className={`w-16 h-16 rounded-full flex items-center justify-center text-4xl mr-4 shadow-inner border-2 border-white ${helado.color || 'bg-yellow-300'}`}>
+                                            {helado.emoji}
+                                        </div>
+                                        <div className="flex-1">
+                                            <h3 className="font-bold text-xl text-gray-800">{helado.nombre}</h3>
+                                            <p className="text-sm text-gray-600">Venta: ${formatearPlata(helado.precioVenta)} | Costo: ${formatearPlata(helado.costoCompra)}</p>
+                                            
+                                            {saborEditando !== helado.id && (
+                                                <button 
+                                                    onClick={() => iniciarEdicion(helado)} 
+                                                    className="mt-2 text-xs font-bold text-yellow-800 bg-yellow-200 px-3 py-1.5 rounded-full hover:bg-yellow-300 cursor-pointer shadow-sm border border-yellow-300 inline-flex items-center gap-1 transition-transform active:scale-95"
+                                                >
+                                                    <span>✏️</span> Cambiar precios
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="text-right flex flex-col items-center ml-2">
+                                            <span className="text-sm font-bold text-gray-500 uppercase">Cantidad</span>
+                                            <div className={`text-3xl font-black mt-1 ${helado.stock < 5 ? 'text-red-500' : 'text-yellow-700'}`}>
+                                                {helado.stock}
+                                            </div>
+                                            {helado.stock < 5 && helado.stock > 0 && <span className="text-xs text-red-500 font-bold animate-pulse">¡Pocos!</span>}
+                                            {helado.stock === 0 && <span className="text-xs text-red-500 font-bold animate-pulse">¡Agotado!</span>}
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-xs font-bold text-indigo-400 uppercase">Tienes</p>
-                                        <p className={`text-3xl font-black ${h.stock < 5 ? 'text-red-500' : 'text-indigo-600'}`}>{h.stock}</p>
-                                        <button onClick={() => {setSaborEditando(h.id); setPreciosEditados({precioVenta: h.precioVenta, costoCompra: h.costoCompra})}} className="text-xs bg-white px-2 py-1 rounded-full shadow-sm border border-indigo-200 mt-1">✏️ Editar</button>
-                                    </div>
-                                    {saborEditando === h.id && (
-                                        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-                                            <div className="bg-white p-6 rounded-3xl w-full max-w-xs">
-                                                <h3 className="font-bold mb-4">Editar {h.nombre}</h3>
-                                                <label className="block text-sm">Costo Compra:</label>
-                                                <input type="number" className="w-full p-2 mb-3 border rounded-lg" value={preciosEditados.costoCompra} onChange={e => setPreciosEditados({...preciosEditados, costoCompra: e.target.value})} />
-                                                <label className="block text-sm">Precio Venta:</label>
-                                                <input type="number" className="w-full p-2 mb-4 border rounded-lg" value={preciosEditados.precioVenta} onChange={e => setPreciosEditados({...preciosEditados, precioVenta: e.target.value})} />
-                                                <div className="flex gap-2">
-                                                    <button onClick={() => guardarEdicion(h.id)} className="flex-1 bg-green-500 text-white py-2 rounded-xl">OK</button>
-                                                    <button onClick={() => setSaborEditando(null)} className="flex-1 bg-gray-200 py-2 rounded-xl">X</button>
+
+                                    {/* Panel de Edición */}
+                                    {saborEditando === helado.id && (
+                                        <div className="mt-4 p-4 bg-white rounded-xl border-2 border-yellow-400 shadow-sm">
+                                            <h4 className="font-bold text-yellow-700 mb-3 text-center">✏️ Nuevos Precios para {helado.nombre}</h4>
+                                            <div className="flex flex-col sm:flex-row gap-4 mb-3">
+                                                <div className="flex-1">
+                                                    <label className="block text-xs font-bold text-gray-600 mb-1">Costo compra:</label>
+                                                    <div className="flex items-center gap-1">
+                                                        <span className="font-bold text-gray-500">$</span>
+                                                        <input 
+                                                            type="number" 
+                                                            value={preciosEditados.costoCompra}
+                                                            onChange={e => setPreciosEditados({...preciosEditados, costoCompra: e.target.value})}
+                                                            className="w-full p-2 text-lg rounded-xl border-2 border-yellow-200 focus:outline-none focus:border-yellow-400"
+                                                        />
+                                                    </div>
                                                 </div>
+                                                <div className="flex-1">
+                                                    <label className="block text-xs font-bold text-gray-600 mb-1">Precio venta:</label>
+                                                    <div className="flex items-center gap-1">
+                                                        <span className="font-bold text-gray-500">$</span>
+                                                        <input 
+                                                            type="number" 
+                                                            value={preciosEditados.precioVenta}
+                                                            onChange={e => setPreciosEditados({...preciosEditados, precioVenta: e.target.value})}
+                                                            className="w-full p-2 text-lg rounded-xl border-2 border-yellow-200 focus:outline-none focus:border-yellow-400"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-center gap-3 mt-4">
+                                                <button onClick={() => guardarEdicion(helado.id)} className="btn-burbuja bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full shadow-md cursor-pointer flex items-center gap-2">
+                                                    Guardar ✅
+                                                </button>
+                                                <button onClick={() => setSaborEditando(null)} className="btn-burbuja bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-6 rounded-full shadow-md cursor-pointer flex items-center gap-2">
+                                                    Cancelar ❌
+                                                </button>
                                             </div>
                                         </div>
                                     )}
                                 </div>
                             ))}
                         </div>
+
+                        {/* Formulario para agregar nuevo sabor */}
+                        <div className="border-t-4 border-dashed border-yellow-200 pt-6 mt-4">
+                            {!mostrarFormNuevo ? (
+                                <button 
+                                    onClick={() => setMostrarFormNuevo(true)}
+                                    className="btn-burbuja w-full py-4 rounded-2xl font-bold text-xl text-gray-900 bg-gradient-to-r from-yellow-400 to-amber-400 hover:from-yellow-500 hover:to-amber-500 shadow-lg flex justify-center items-center gap-2 cursor-pointer"
+                                >
+                                    <i className="ph-bold ph-plus-circle text-3xl"></i>
+                                    ¡Inventar un Nuevo Sabor!
+                                </button>
+                            ) : (
+                                <div className="bg-yellow-50 p-6 rounded-2xl border-4 border-yellow-300 relative">
+                                    <button 
+                                        onClick={() => setMostrarFormNuevo(false)}
+                                        className="absolute top-2 right-2 text-yellow-700 hover:text-yellow-900 bg-white rounded-full w-8 h-8 flex items-center justify-center border-2 border-yellow-200 font-bold cursor-pointer"
+                                    >
+                                        X
+                                    </button>
+                                    <h3 className="text-2xl font-bold text-yellow-700 mb-4 text-center">✨ Nueva Paleta ✨</h3>
+                                    <form onSubmit={handleAgregarSabor} className="space-y-4">
+                                        <div className="flex flex-col sm:flex-row gap-4">
+                                            <div className="sm:w-1/4">
+                                                <label className="block text-sm font-bold text-yellow-800 mb-1">Emoji</label>
+                                                <input 
+                                                    type="text" 
+                                                    value={nuevoSabor.emoji}
+                                                    onChange={e => setNuevoSabor({...nuevoSabor, emoji: e.target.value})}
+                                                    className="w-full p-2 text-2xl text-center rounded-xl border-2 border-yellow-200 focus:outline-none focus:border-yellow-400 bg-white"
+                                                    placeholder="🍉"
+                                                />
+                                            </div>
+                                            <div className="sm:w-3/4">
+                                                <label className="block text-sm font-bold text-yellow-800 mb-1">Nombre del sabor</label>
+                                                <input 
+                                                    type="text" 
+                                                    value={nuevoSabor.nombre}
+                                                    onChange={e => setNuevoSabor({...nuevoSabor, nombre: e.target.value})}
+                                                    className="w-full p-2 text-lg rounded-xl border-2 border-yellow-200 focus:outline-none focus:border-yellow-400 bg-white"
+                                                    placeholder="Ej: Sandía"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row gap-4">
+                                            <div className="sm:w-1/2">
+                                                <label className="block text-sm font-bold text-yellow-800 mb-1">¿A cuánto la compras?</label>
+                                                <div className="flex items-center gap-1">
+                                                    <span className="font-bold text-gray-500">$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        value={nuevoSabor.costoCompra}
+                                                        onChange={e => setNuevoSabor({...nuevoSabor, costoCompra: e.target.value})}
+                                                        className="w-full p-2 text-lg rounded-xl border-2 border-yellow-200 focus:outline-none focus:border-yellow-400 bg-white"
+                                                        placeholder="700"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="sm:w-1/2">
+                                                <label className="block text-sm font-bold text-yellow-800 mb-1">¿A cuánto la vendes?</label>
+                                                <div className="flex items-center gap-1">
+                                                    <span className="font-bold text-gray-500">$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        value={nuevoSabor.precioVenta}
+                                                        onChange={e => setNuevoSabor({...nuevoSabor, precioVenta: e.target.value})}
+                                                        className="w-full p-2 text-lg rounded-xl border-2 border-yellow-200 focus:outline-none focus:border-yellow-400 bg-white"
+                                                        placeholder="2000"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button 
+                                            type="submit"
+                                            className="btn-burbuja w-full py-3 mt-2 rounded-xl font-bold text-lg text-gray-900 bg-yellow-400 hover:bg-yellow-500 shadow-md cursor-pointer"
+                                        >
+                                            Guardar Nuevo Sabor 🪄
+                                        </button>
+                                    </form>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             );
 
             const renderInformes = () => (
-                <div className="p-4 max-w-4xl mx-auto">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <div className="bg-green-100 p-4 rounded-2xl border-2 border-green-300 text-center">
-                            <p className="text-xs font-bold text-green-800">INGRESOS</p>
-                            <p className="text-xl font-black text-green-600">${formatearPlata(metricas.ingresos)}</p>
-                        </div>
-                        <div className="bg-red-100 p-4 rounded-2xl border-2 border-red-300 text-center">
-                            <p className="text-xs font-bold text-red-800">GASTOS</p>
-                            <p className="text-xl font-black text-red-600">${formatearPlata(metricas.gastos)}</p>
-                        </div>
-                        <div className="bg-purple-100 p-4 rounded-2xl border-2 border-purple-300 text-center">
-                            <p className="text-xs font-bold text-purple-800">RETIROS</p>
-                            <p className="text-xl font-black text-purple-600">${formatearPlata(metricas.retiros)}</p>
-                        </div>
-                        <div className="bg-yellow-100 p-4 rounded-2xl border-4 border-yellow-400 text-center scale-105">
-                            <p className="text-xs font-bold text-yellow-800">ALCANCÍA 🐖</p>
-                            <p className="text-2xl font-black text-yellow-600">${formatearPlata(metricas.plataEnCaja)}</p>
-                        </div>
-                    </div>
+                <div className="p-4">
+                    <div className="bg-white p-6 rounded-3xl shadow-xl border-4 border-yellow-400 max-w-5xl mx-auto">
+                        <h2 className="text-3xl font-bold text-yellow-600 mb-2 text-center">📊 Mis Logros y Monedas 🏆</h2>
+                        <p className="text-center text-gray-500 mb-8">Mira cómo le va a tu negocio y saca tus ganancias.</p>
 
-                    <div className="bg-white p-6 rounded-3xl shadow-xl border-4 border-yellow-300">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-xl font-bold">🏆 Ranking de Sabores</h3>
-                            <button onClick={borrarTodo} className="text-xs bg-red-50 text-red-400 p-2 rounded-lg hover:bg-red-100">Reiniciar Negocio 🗑️</button>
+                        {/* Tarjetas de Resumen */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                            <div className="bg-blue-100 p-4 rounded-2xl border-2 border-blue-300 text-center shadow-sm">
+                                <h3 className="text-md font-bold text-blue-800 mb-1">Ventas 🤑</h3>
+                                <p className="text-2xl font-black text-blue-600">${formatearPlata(metricas.ingresos)}</p>
+                                <p className="text-xs text-blue-700 mt-1">Plata que entró</p>
+                            </div>
+                            <div className="bg-yellow-100 p-4 rounded-2xl border-2 border-yellow-300 text-center shadow-sm">
+                                <h3 className="text-md font-bold text-yellow-800 mb-1">Compras 🧊</h3>
+                                <p className="text-2xl font-black text-yellow-700">${formatearPlata(metricas.gastos)}</p>
+                                <p className="text-xs text-yellow-800 mt-1">Plata que gastaste</p>
+                            </div>
+                            <div className="bg-cyan-100 p-4 rounded-2xl border-2 border-cyan-300 text-center shadow-sm">
+                                <h3 className="text-md font-bold text-cyan-800 mb-1">Premios 🎁</h3>
+                                <p className="text-2xl font-black text-cyan-600">${formatearPlata(metricas.retiros)}</p>
+                                <p className="text-xs text-cyan-700 mt-1">Plata que sacaste</p>
+                            </div>
+                            <div className="bg-green-100 p-4 rounded-2xl border-4 border-green-400 text-center shadow-md transform scale-105">
+                                <h3 className="text-md font-bold text-green-800 mb-1">Alcancía 🐖</h3>
+                                <p className={`text-3xl font-black ${metricas.plataEnCaja >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                    ${formatearPlata(metricas.plataEnCaja)}
+                                </p>
+                                <p className="text-xs text-green-700 mt-1">Plata disponible</p>
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            {metricas.ventasPorProducto.sort((a,b) => b.cantidadVendida - a.cantidadVendida).map(p => (
-                                <div key={p.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                                    <span>{p.emoji} {p.nombre}</span>
+
+                        {/* Zona de Retiros (Sacar Ganancias) */}
+                        <div className="bg-gradient-to-r from-yellow-50 to-green-50 p-6 rounded-2xl border-2 border-yellow-300 mb-8 shadow-inner">
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div>
+                                    <h3 className="text-2xl font-bold text-yellow-800">¡Saca tu premio, Dilan! 🎉</h3>
+                                    <p className="text-gray-600 text-sm mt-1">Puedes sacar hasta <strong>${formatearPlata(metricas.plataEnCaja > 0 ? metricas.plataEnCaja : 0)}</strong> de tu alcancía.</p>
+                                </div>
+                                
+                                {!mostrarFormRetiro ? (
+                                    <button 
+                                        onClick={() => setMostrarFormRetiro(true)}
+                                        disabled={metricas.plataEnCaja <= 0}
+                                        className={`btn-burbuja font-bold py-3 px-6 rounded-full text-lg shadow-md flex items-center gap-2 ${metricas.plataEnCaja <= 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-yellow-400 hover:bg-yellow-500 text-gray-900 cursor-pointer font-black'}`}
+                                    >
+                                        <i className="ph-fill ph-piggy-bank text-2xl"></i> Romper Alcancía
+                                    </button>
+                                ) : (
+                                    <form onSubmit={confirmarRetiro} className="w-full md:w-auto flex flex-col sm:flex-row gap-3 bg-white p-3 rounded-xl border-2 border-yellow-300 shadow-sm">
+                                        <div>
+                                            <input 
+                                                type="text" 
+                                                value={retiro.motivo}
+                                                onChange={e => setRetiro({...retiro, motivo: e.target.value})}
+                                                placeholder="Ej: Un juguete nuevo"
+                                                className="w-full sm:w-40 p-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:border-yellow-400"
+                                            />
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <span className="font-bold text-gray-500">$</span>
+                                            <input 
+                                                type="number" 
+                                                value={retiro.monto}
+                                                onChange={e => setRetiro({...retiro, monto: e.target.value})}
+                                                placeholder="0"
+                                                max={metricas.plataEnCaja}
+                                                className="w-full sm:w-24 p-2 text-sm font-bold rounded-lg border border-gray-300 focus:outline-none focus:border-yellow-400"
+                                            />
+                                        </div>
+                                        <div className="flex gap-1">
+                                            <button type="submit" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-black py-2 px-4 rounded-lg cursor-pointer flex-1">
+                                                Sacar ✅
+                                            </button>
+                                            <button type="button" onClick={() => setMostrarFormRetiro(false)} className="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-3 rounded-lg cursor-pointer">
+                                                X
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
+                            </div>
+                            
+                            {historialRetiros.length > 0 && (
+                                <div className="mt-4 pt-4 border-t-2 border-dashed border-yellow-200">
+                                    <h4 className="text-sm font-bold text-yellow-800 mb-2">Tus premios anteriores:</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {historialRetiros.map(r => (
+                                            <span key={r.id} className="bg-white border border-yellow-200 text-xs text-gray-700 px-3 py-1 rounded-full shadow-sm">
+                                                <strong className="text-yellow-700">${formatearPlata(r.monto)}</strong> para {r.motivo}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Ventas por Producto */}
+                        <h3 className="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-yellow-200 pb-2">🎖️ Paletas más vendidas</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {metricas.ventasPorProducto.sort((a, b) => b.cantidadVendida - a.cantidadVendida).map((prod, index) => (
+                                <div key={index} className="bg-gray-50 p-4 rounded-xl border-2 border-gray-200 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-3xl">{prod.emoji}</span>
+                                        <div>
+                                            <p className="font-bold text-gray-700">{prod.nombre}</p>
+                                            <p className="text-sm text-gray-500">Vendidos: {prod.cantidadVendida}</p>
+                                        </div>
+                                    </div>
                                     <div className="text-right">
-                                        <span className="font-bold">{p.cantidadVendida} vendidos</span>
-                                        <p className="text-xs text-green-500">+${formatearPlata(p.ingresos)}</p>
+                                        <p className="font-bold text-green-600">+${formatearPlata(prod.ingresos)}</p>
                                     </div>
                                 </div>
                             ))}
@@ -365,47 +827,48 @@
             );
 
             return (
-                <div className="min-h-screen flex flex-col pb-10">
-                    <header className="bg-white p-4 shadow-md flex items-center justify-center gap-4 border-b-4 border-cyan-400 rounded-b-3xl mx-4 mt-2">
+                <div className="min-h-screen flex flex-col max-w-6xl mx-auto">
+                    {/* Encabezado */}
+                    <header className="bg-white p-4 shadow-md flex items-center justify-center gap-4 border-b-4 border-yellow-400 rounded-b-3xl mx-4 mt-2 relative z-10">
                         <span className="text-4xl animate-bounce">🍦</span>
-                        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-indigo-500">Paletas de Dilan</h1>
+                        <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-yellow-500 to-green-600">
+                            Paletas de Dilan
+                        </h1>
+                        <span className="text-4xl animate-bounce" style={{animationDelay: '0.2s'}}>👦</span>
                     </header>
 
-                    <nav className="flex justify-center gap-2 p-4 flex-wrap">
-                        <button onClick={() => setPantallaActual('vender')} className={`px-4 py-2 rounded-full font-bold shadow-sm border-2 ${pantallaActual === 'vender' ? 'bg-cyan-500 text-white border-cyan-600' : 'bg-white text-cyan-500 border-cyan-200'}`}>💰 Vender</button>
-                        <button onClick={() => setPantallaActual('comprar')} className={`px-4 py-2 rounded-full font-bold shadow-sm border-2 ${pantallaActual === 'comprar' ? 'bg-green-500 text-white border-green-600' : 'bg-white text-green-500 border-green-200'}`}>🚚 Comprar</button>
-                        <button onClick={() => setPantallaActual('stock')} className={`px-4 py-2 rounded-full font-bold shadow-sm border-2 ${pantallaActual === 'stock' ? 'bg-indigo-500 text-white border-indigo-600' : 'bg-white text-indigo-500 border-indigo-200'}`}>❄️ Nevera</button>
-                        <button onClick={() => setPantallaActual('informes')} className={`px-4 py-2 rounded-full font-bold shadow-sm border-2 ${pantallaActual === 'informes' ? 'bg-yellow-500 text-white border-yellow-600' : 'bg-white text-yellow-500 border-yellow-200'}`}>📊 Logros</button>
+                    {/* Menú de Navegación Principal */}
+                    <nav className="flex justify-center flex-wrap gap-2 md:gap-4 p-4 z-20">
+                        <button 
+                            onClick={() => setPantallaActual('vender')}
+                            className={`btn-burbuja flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg shadow-md border-2 ${pantallaActual === 'vender' ? 'bg-blue-600 text-white border-blue-700' : 'bg-white text-blue-600 border-blue-200 hover:bg-blue-50'}`}
+                        >
+                            <i className="ph ph-cash-register text-2xl"></i> Vender
+                        </button>
+                        <button 
+                            onClick={() => setPantallaActual('comprar')}
+                            className={`btn-burbuja flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg shadow-md border-2 ${pantallaActual === 'comprar' ? 'bg-green-600 text-white border-green-700' : 'bg-white text-green-600 border-green-200 hover:bg-green-50'}`}
+                        >
+                            <i className="ph ph-truck text-2xl"></i> Comprar
+                        </button>
+                        <button 
+                            onClick={() => setPantallaActual('stock')}
+                            className={`btn-burbuja flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg shadow-md border-2 ${pantallaActual === 'stock' ? 'bg-yellow-500 text-gray-900 font-black border-yellow-600' : 'bg-white text-yellow-700 border-yellow-200 hover:bg-yellow-50'}`}
+                        >
+                            <i className="ph ph-snowflake text-2xl"></i> La Nevera
+                        </button>
+                        <button 
+                            onClick={() => setPantallaActual('informes')}
+                            className={`btn-burbuja flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg shadow-md border-2 ${pantallaActual === 'informes' ? 'bg-cyan-600 text-white border-cyan-700' : 'bg-white text-cyan-600 border-cyan-200 hover:bg-cyan-50'}`}
+                        >
+                            <i className="ph ph-chart-bar-horizontal text-2xl"></i> Mis Logros
+                        </button>
                     </nav>
 
-                    <main className="flex-1">
+                    {/* Área de Contenido Principal */}
+                    <main className="flex-1 pb-10">
                         {pantallaActual === 'vender' && renderVender()}
-                        {pantallaActual === 'comprar' && (
-                            <div className="flex flex-col lg:flex-row gap-6 p-4">
-                                <div className="flex-1 bg-white p-6 rounded-3xl border-4 border-green-300">
-                                    <h2 className="text-2xl font-bold text-green-600 mb-4 text-center">Abastecer</h2>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {inventario.map(h => (
-                                            <button key={h.id} onClick={() => agregarAlCarritoCompra(h)} className="p-3 bg-green-50 rounded-xl border-2 border-green-100 flex flex-col items-center">
-                                                <span className="text-3xl">{h.emoji}</span>
-                                                <span className="text-xs font-bold">{h.nombre}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="w-full lg:w-80 bg-orange-50 p-6 rounded-3xl border-4 border-orange-300">
-                                    <h3 className="font-bold text-center mb-4">Pedido al Proveedor</h3>
-                                    {carritoCompra.map(i => (
-                                        <div key={i.id} className="flex justify-between text-sm mb-2">
-                                            <span>{i.nombre} x{i.cantidad}</span>
-                                            <button onClick={() => quitarDelCarritoCompra(i.id)} className="text-red-500 font-bold">X</button>
-                                        </div>
-                                    ))}
-                                    <div className="mt-4 pt-4 border-t font-bold flex justify-between"><span>Total:</span> <span>${formatearPlata(totalCompra)}</span></div>
-                                    <button onClick={confirmarCompra} disabled={carritoCompra.length === 0} className="w-full mt-4 bg-orange-500 text-white py-3 rounded-xl disabled:grayscale">Pagar Pedido</button>
-                                </div>
-                            </div>
-                        )}
+                        {pantallaActual === 'comprar' && renderComprar()}
                         {pantallaActual === 'stock' && renderStock()}
                         {pantallaActual === 'informes' && renderInformes()}
                     </main>
