@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paletas de Dilan</title>
+    <meta name="theme-color" content="#fef08a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- MANIFEST CON TU ICONO PERSONALIZADO DE GITHUB -->
+    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"Paletas de Dilan","short_name":"PaletasDilan","start_url":".","display":"standalone","background_color":"%23fef08a","theme_color":"%23fef08a","icons":[{"src":"https://raw.githubusercontent.com/waosoriocortes-afk/DILAN/main/icono-dilan.png","sizes":"192x192","type":"image/png"},{"src":"https://raw.githubusercontent.com/waosoriocortes-afk/DILAN/main/icono-dilan.png","sizes":"512x512","type":"image/png"}]}'>
+    
     <!-- Tailwind CSS para el diseño -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React y ReactDOM -->
@@ -18,7 +25,7 @@
     <style>
         body {
             font-family: 'Comic Neue', cursive;
-            background-color: #fef08a; /* Fondo amarillo muy clarito y alegre */
+            background-color: #fef08a;
         }
         .btn-burbuja {
             transition: transform 0.1s ease-in-out;
@@ -40,7 +47,7 @@
             return Number(valor).toLocaleString('es-CO');
         };
 
-        // Datos iniciales de las paletas a 2000 y costo 700 con stock en 0
+        // Datos iniciales de las paletas con stock en 0 por defecto
         const HELADOS_INICIALES = [
             { id: '1', nombre: 'Frutos rojos', emoji: '🍓', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-red-500' },
             { id: '2', nombre: 'Arequipe', emoji: '🍮', precioVenta: 2000, costoCompra: 700, stock: 0, color: 'bg-orange-300' },
@@ -828,13 +835,21 @@
 
             return (
                 <div className="min-h-screen flex flex-col max-w-6xl mx-auto">
-                    {/* Encabezado */}
-                    <header className="bg-white p-4 shadow-md flex items-center justify-center gap-4 border-b-4 border-yellow-400 rounded-b-3xl mx-4 mt-2 relative z-10">
-                        <span className="text-4xl animate-bounce">🍦</span>
-                        <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-yellow-500 to-green-600">
+                    {/* Encabezado con el logotipo personalizado */}
+                    <header className="bg-white p-3 shadow-md flex items-center justify-center border-b-4 border-yellow-400 rounded-b-3xl mx-4 mt-2 relative z-10">
+                        <img 
+                            src="https://raw.githubusercontent.com/waosoriocortes-afk/DILAN/main/helados%20de%20dilan.png" 
+                            alt="Helados de Dilan" 
+                            className="h-16 md:h-20 object-contain drop-shadow-md"
+                            onError={(e) => {
+                                // Fallback por si el enlace tarda o falla en cargar
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'block';
+                            }}
+                        />
+                        <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-yellow-500 to-green-600 hidden">
                             Paletas de Dilan
                         </h1>
-                        <span className="text-4xl animate-bounce" style={{animationDelay: '0.2s'}}>👦</span>
                     </header>
 
                     {/* Menú de Navegación Principal */}
